@@ -1,4 +1,4 @@
-# bookly_admin
+# stutern_admin
 
 ## Project setup
 ```
