@@ -26,6 +26,16 @@ Vue.use(BootstrapVue);
 axios.defaults.headers.common['x-access-token'] = window.sessionStorage.accessToken;
 
 
+router.beforeEach((to, from, next) => {
+  console.log(from)
+  console.log(store.getters.logginStatus)
+  // if (!store.getters.logginStatus) {
+  //   return next('/')
+  // }
+
+  next()
+})
+
 new Vue({
   router,
   store,

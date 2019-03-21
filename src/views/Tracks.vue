@@ -128,7 +128,7 @@
                                 color: #fff;
                                 padding: 12px 30px;
                                 border-radius: 6px;
-                                margin-top: 5px;" @click="updateTrack()">Create</button>
+                                margin-top: 5px;" @click="editTrack()">Create</button>
             </span>
         </b-modal>
     </div>
@@ -208,7 +208,7 @@ export default {
         return text;
     },
 
-    upload (e, n) {
+    upload (e) {
       console.log(e)
       const formData = new FormData()
       formData.append('file', e[0]);
@@ -217,17 +217,7 @@ export default {
       axios.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
       .then(res => {
         console.log(res)
-        switch (n) {
-            case 1:
-                this.newUser.userPhoto = res.data.secure_url 
-                break;
-            case 2:
-                this.selectedUser.userPhoto = res.data.secure_url
-            case 3:
-                this.newTrack.banner = res.data.secure_url
-            default:
-                break;
-        }
+        this.newTrack.banner = res.data.secure_url
       })
       .catch(err => {
         console.log(err.response) 
@@ -294,7 +284,7 @@ export default {
 <style lang="scss" scoped>
     .wrapper {
         width: 100%;
-        height: 100vh;
+        min-height: 100vh;
         overflow-x: hidden;
         background-color: #FAFAFA
     }

@@ -5,6 +5,7 @@ import Sets from './views/Sets.vue';
 import Tracks from './views/Tracks.vue';
 import UserProjects from './views/UserProjects.vue';
 import Scholarships from './views/Scholarships.vue';
+import Skills from './views/Skills.vue';
 // import Textbooks from './views/Textbooks.vue';
 // import AddTextbooks from './views/AddTextbook.vue';
 // import AddSubject from './views/AddSubject.vue';
@@ -42,6 +43,11 @@ export default new Router({
       path: '/scholarships',
       name: 'scholarships',
       component: Scholarships,
+    },
+    {
+      path: '/skills',
+      name: 'skills',
+      component: Skills,
     },
     {
       path: '/user-projects/:id',

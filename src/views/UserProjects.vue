@@ -8,17 +8,20 @@
                 <p class="jobTitle">
                     {{userDetails.jobTitle}}
                 </p>
+                <p class="userdesc">
+                    {{userDetails.userDesc}}
+                </p>
             </b-col>
             <b-col class="topp" sm="6" xs="12">
                 <img class="topp-img" :src="userDetails.userPhoto" alt="">
             </b-col>
 
-            <b-col sm="6">
+            <b-col sm="6" v-if="userProjects.length > 0">
                 <p class="Projects name">
                     Projects
                 </p>
             </b-col>
-            <b-col sm="6">
+            <b-col sm="6" v-if="userProjects.length > 0">
                 <button class="edit add" @click="openAdd()">
                     Add Project
                 </button>
@@ -48,16 +51,16 @@
                 <img src="../assets/empty.svg" class="empty-img" alt="">
                 <p class="empty">
                     This user has no projects 
-                    <button>
+                    <button @click="openAdd()">
                         Create project
                     </button>
                 </p>
             </b-col>
         </b-row>
         <b-modal v-model="addModal" centered title="Add Project" :hide-footer="true">
-            <!-- <label> "User full name</label> -->
+            <label> Project title</label>
             <b-form-input
-                style="margin-top:12px; height: 55px;"
+                style="margin-bottom:20px; height: 55px;"
                 type="text"
                 required
                 label= "name"
@@ -65,11 +68,11 @@
                 class="inp"
                 placeholder="" />
 
+            <label> Project description</label>
             <b-form-textarea
                 id="textarea"
-                placeholder="Enter something..."
                 v-model="newProject.projectDesc"
-                class="inp"
+                style="margin-bottom:20px;"
                 rows="3"
                 max-rows="6"
                 />
@@ -241,6 +244,7 @@ export default {
             color:#47b8a3;
             font-size: 25px;
             margin-top: 20px;
+            margin-bottom: 0 !important
         }
         .empty {
             color: #67747C;
@@ -260,11 +264,17 @@ export default {
         }
         .empty-img {
             width: 400px;
-            margin: 12px auto;
+            margin: 30px auto;
         }
         .jobTitle {
             color:#a3a7a6;
             font-size: 15px;
+            margin-top: 0 !important
+        }
+        .userdesc {
+            color:#8c8c8c;
+            font-size: 13px;
+            font-style: italic;
             margin-top: 0 !important
         }
         .topp {

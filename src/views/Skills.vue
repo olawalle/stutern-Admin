@@ -3,93 +3,72 @@
         <b-row class="sect-two">
             <b-col sm="12">
                 <div class="full-content">
-                    <button class="main-btn-sm" @click="openAddscholarship()">
-                        Create new Scholarship
+                    <button class="main-btn-sm" @click="openAddSkill()">
+                        Create new skill
                     </button>
                 </div>
             </b-col>
 
-            <b-col class="card-container" v-for="(scholarship, i) in scholarships" :key="i" sm="6" xs="12">
-                <div class="card">    
-                    <img class="card-img" :src="scholarship.banner" alt="">
-                    <p class="card-text-heading">
-                        {{scholarship.scholarshipName}} - {{scholarship.scholarshipFacilitator}}
-                    </p>
-                    <p class="card-text-content">
-                        {{scholarship.scholarshipDesc}}
-                    </p>
+            <b-col style="text-align: center" class="skill" title="Click to edit" sm="3" xs="3" v-for="(skill, i) in skills" :key="i">
+                <button @click="deleteSkill(skill._id)">
+                    delete
+                </button>
+                <div v-if="skill.type === 'photo'" style="width: 100%; text-align: center">
+                    <img :src="skill.skillPhoto" alt="" height="100">
+                    <p v-if="skill.type === 'photo'" style="font-size: 20px; width: 100%; text-align: center">{{skill.name}}</p>
                 </div>
-                <div class="overlay">
-                    <button class="edit" @click="openEdit(scholarship._id)">
-                        Edit
-                    </button>
-                    <button class="delete" @click="delteProject(scholarship._id)">
-                        Delete
-                    </button>
+                
+                <div v-if="skill.type === 'text'" style="font-size: 20px color: red; width: 100%">
+                    <span style="background-color: #bbe6f8;
+                                color: #688ec5;
+                                border-radius: 47px;
+                                padding: 20px;">
+                        {{skill.name}}
+                    </span>
                 </div>
             </b-col>
-
             
-            <b-col style="text-align: center" sm="12" xs="12" v-if="scholarships.length === 0">
+            <b-col style="text-align: center" sm="12" xs="12" v-if="skills.length === 0">
                 <img src="../assets/empty.svg" class="empty-img" alt="">
                 <p class="empty">
-                    There are no scholarships
+                    There are no skills 
+                    <button @click="openAdd()">
+                        Create skill
+                    </button>
                 </p>
             </b-col>
         </b-row>
         
-        <b-modal v-model="addScholarshipModal" centered title="Create new scholarship" :hide-footer="true">
-            
+        <b-modal v-model="addSkillModal" centered title="Create new skill" :hide-footer="true">
             <span class="two">
                 <label>
-                Scholarship Name
-            </label>
+                    Skill Type
+                </label>
+                <b-form-select class="mySelect my-select" @change="switchType($event)" v-model="type" :options="types" /> <br> <br>
+                <label>
+                    Skill Name
+                </label>
                 <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
+                    style="margin: 5px 0 20px 0; height: 55px;"
                     type="text"
-                    v-model="newscholarship.scholarshipName"
+                    v-model="newSkill.name"
                     required />
-                    <label>
-                Scholarship Title
-            </label>
+                    
+                <label v-if="this.showText">
+                    Skill Text
+                </label>
                 <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
+                    v-if="this.showText"
+                    style="margin: 5px 0 20px 0; height: 55px;"
                     type="text"
-                    v-model="newscholarship.scholarshipTitle"
+                    v-model="newSkill.skillText"
                     required />
-                    <label>
-                Scholarship Faciltator
-            </label>
-                <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="newscholarship.scholarshipFacilitator"
-                    required />
-
-                    <label>
-                Scholarship Description
-            </label>                    
-                <b-form-textarea
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="newscholarship.scholarshipDesc"
-                    rows="15"
-                    required />
-
-                    <label>
-                Scholarship Overview
-            </label>
-                <b-form-textarea
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="newscholarship.overview"
-                    rows="15"
-                    required />
-
-            <label>
-                Scholarship Banner
-            </label>
-                <b-form-file v-model="imgFile" class="" v-on:change="upload($event.target.files, 1)" placeholder="Upload scholarship banner"></b-form-file>
+                    
+                    
+                <label v-if="!this.showText">
+                    Skill Icon
+                </label>
+                <b-form-file v-if="!this.showText" v-model="imgFile" v-on:change="upload($event.target.files, 1)" placeholder="Upload skill icon"></b-form-file>
             </span>
             <span class="three">
                 <button style="float: right;
@@ -98,62 +77,40 @@
                                 color: #fff;
                                 padding: 12px 30px;
                                 border-radius: 6px;
-                                margin-top: 20px;" @click="addNewscholarship()">Create</button>
+                                margin-top: 5px;" @click="addNewSkill()">Create</button>
             </span>
         </b-modal>
-
         
-        <b-modal v-model="editScholarshipModal" centered title="Edit scholarship" :hide-footer="true">
+        <b-modal v-model="editSkillModal" centered title="Edit track" :hide-footer="true">
             <span class="two">
-                 <label>
-                Scholarship Name
-            </label>
+                <label>
+                    Skill Type
+                </label>
+                <b-form-select class="mySelect my-select" @change="switchType($event)" v-model="type" :options="types" /> <br> <br>
+                <label>
+                    Skill Name
+                </label>
                 <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
+                    style="margin: 5px 0 20px 0; height: 55px;"
                     type="text"
-                    v-model="selectedScholarship.scholarshipName"
+                    v-model="selectedSkill.name"
                     required />
-                    <label>
-                Scholarship Title
-            </label>
+                    
+                <label v-if="this.showText">
+                    Skill Text
+                </label>
                 <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
+                    v-if="this.showText"
+                    style="margin: 5px 0 20px 0; height: 55px;"
                     type="text"
-                    v-model="selectedScholarship.scholarshipTitle"
+                    v-model="selectedSkill.skillText"
                     required />
-                    <label>
-                Scholarship Faciltator
-            </label>
-                <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="selectedScholarship.scholarshipFacilitator"
-                    required />
-
-                    <label>
-                Scholarship Description
-            </label>                    
-                <b-form-textarea
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="selectedScholarship.scholarshipDesc"
-                    rows="15"
-                    required />
-
-                    <label>
-                Scholarship Overview
-            </label>
-                <b-form-textarea
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    v-model="selectedScholarship.overview"
-                    rows="15"
-                    required />
-
-            <label>
-                Scholarship Banner
-            </label>
-                <b-form-file v-model="imgFile" class="" v-on:change="upload($event.target.files, 2)" placeholder="Upload scholarship banner"></b-form-file>
+                    
+                    
+                <label v-if="!this.showText">
+                    Skill Icon
+                </label>
+                <b-form-file v-if="!this.showText" v-model="imgFile" v-on:change="upload($event.target.files, 0)" placeholder="Upload skill icon"></b-form-file>
             </span>
             <span class="three">
                 <button style="float: right;
@@ -162,7 +119,7 @@
                                 color: #fff;
                                 padding: 12px 30px;
                                 border-radius: 6px;
-                                margin-top: 20px;" @click="updateScholarship()">Submit</button>
+                                margin-top: 5px;" @click="editSkill()">Create</button>
             </span>
         </b-modal>
     </div>
@@ -182,39 +139,69 @@ export default {
         cloudName: 'dl78ezj6d'
       }, 
       imgFile: null,
-      addScholarshipModal: false,
-      editScholarshipModal: false,
-      newscholarship: {
-        scholarshipName: '',
-        scholarshipTitle: '',
-        scholarshipDesc: '',
-        scholarshipFacilitator: '',
-        banner: '',
-        overView: ''
+      addSkillModal: false,
+      editSkillModal:  false,
+      selectedSkill: {
+        name: '',
+        skillPhoto: '',
+        skillText: '',
+        type: ''
       },
-      selectedScholarship: {
-        scholarshipName: '',
-        scholarshipTitle: '',
-        scholarshipDesc: '',
-        scholarshipFacilitator: '',
-        banner: '',
-        overView: ''
-      }
+      newSkill: {
+        name: '',
+        skillPhoto: '',
+        skillText: '',
+        type: ''
+      },
+      showText: true,
+      type: 0,
+      types: [
+        {text: 'Text', value: 0},
+        {text: 'Picture', value: 1}
+      ]
     };
   },
   computed: {
     ...mapGetters({
         sets: 'getSets',
-        scholarships: 'getAllScholarships',
-        setStudents: 'getSetStudents'
-    })
+        setStudents: 'getSetStudents',
+        tracks: 'getJobTitles',
+        skills: 'getSkills'
+    }),
+    set () {
+        return this.sets[0].value
+    },
+    jobTitle: {
+        get: function () {
+            return this.selectedUser.jobTitle
+        },
+        set: function (value) {
+            this.newObj.jobTitle = value
+        }
+    }
   },
   methods: {
+    switchType (e) {
+        console.log(e)
+        if (e === 0) { this.showText = true } else { this.showText = false }
+        console.log(this.showText)
+    },
     openEdit (id) {
-        this.selectedScholarship = this.scholarships.find(sch => sch._id === id)
-        this.editScholarshipModal = true
+        this.selectedTrack = this.tracks.find(track => track._id === id)
+        this.editSkillModal = true
     },
 
+    editSkill () {
+        myServices.updateJobTitle(this.selectedTrack)
+        .then(res => {
+            console.log(res)
+            myServices.getJobTitles()
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    },
+    
     makeid(length) {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -234,46 +221,44 @@ export default {
       axios.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
       .then(res => {
         console.log(res)
-        n === 1 ? this.newscholarship.banner = res.data.secure_url : this.selectedScholarship.banner = res.data.secure_url
+        n === 1 ? this.newSkill.skillPhoto = res.data.secure_url : this.selectedSkill.skillPhoto = res.data.secure_url
       })
       .catch(err => {
         console.log(err.response) 
       })
     },
 
-    openAddscholarship() {
-        this.addScholarshipModal = true
+    openAddSkill() {
+        this.addSkillModal = true
     },
 
-    addNewscholarship () {
-        myServices.addScholarship(this.newscholarship)
+    addNewSkill () {
+        this.type === 1 ? this.newSkill.type = 'photo' : this.newSkill.type = 'text'
+        myServices.addSkill(this.newSkill)
         .then(res => {
             console.log(res)
-            this.addScholarshipModal = false
-            myServices.getScholarships()
+            this.addSkillModal = false
+            myServices.getSkills()
         })
         .catch(err => {
             console.log(err)
         })
     },
-
     
-    updateScholarship () {
-        // console.log(this.selectedScholarship)
-        myServices.updateScholarship(this.selectedScholarship)
-        .then(res => {
-            console.log(res)
-            this.editScholarshipModal = false
-            myServices.getScholarships()
-        })
-        .catch(err => {
-            console.log(err)
-            this.editScholarshipModal = false
-        })
-    },
 
     log () {
-        console.log(this.scholarships)
+        console.log(this.tracks)
+    },
+
+    deleteSkill (id) {
+        myServices.deleteSkill(id)
+        .then(res => {
+            console.log(res)
+            myServices.getSkills()
+        })
+        .catch(err => {
+            console.log(err)
+        })
     },
 
     edit(user) {
@@ -282,7 +267,7 @@ export default {
         this.selectedUser = user
     },
     submitEdit() {
-        myServices.up(this.selectedUser)
+        myServices.updateUser(this.selectedUser)
         .then(res => {
             console.log(res)
             this.editUser = false
@@ -304,7 +289,11 @@ export default {
     }
   },
   beforeMount() {
-    myServices.getScholarships()
+    // myServices.getSkills()
+    // .then(res => {
+    //     console.log(res)
+    //     // this.tracks = res.data
+    // })
   },
 };
 </script>
@@ -324,12 +313,35 @@ export default {
     .empty {
         color: #67747C;
         font-size: 14px;
-        margin: 190px 140px 0 140px
+        margin: 10px 140px 0 140px
     }
     .my-select {
         width: 250px;
         margin: 0 12px;
         height: 40px !important;
+    }
+    .skill {
+        border: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 0;
+    }
+    .skill button {
+        position: relative;
+        top: -65px;
+        left: 10px;
+        background-color: red;
+        cursor: pointer;
+        display: none;
+        border: 0;
+        border-radius: 30px;
+        color: #fff
+    }
+    
+    .skill:hover button {
+        display: block
     }
     .inp {
         margin-top: 20px;
@@ -344,7 +356,7 @@ export default {
         .empty {
             color: #67747C;
             width: 100%;
-            font-size: 25px;
+            font-size: 18px;
             text-align: center;
             button {
                 background-color: #00D7C4;
@@ -469,10 +481,10 @@ export default {
                 border-radius: 5px;
                 cursor: pointer;
             }
-            .delete {
-                background-color: red;
-                color: #fff
-            }
+            // .delete {
+            //     background-color: ;
+            //     color: #fff
+            // }
         }
         .card-container:hover .overlay {
             margin-top: -210px;

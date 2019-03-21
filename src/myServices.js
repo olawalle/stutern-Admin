@@ -32,7 +32,7 @@ let deleteUser = (id) => {
 
 let updateUser = (user) => {
     return axios({
-        method: 'PUT',
+        method: 'put',
         url: apiUrls.allUsers+'/'+user._id,
         data: user
     })
@@ -92,8 +92,8 @@ let getJobTitles = () => {
         let data = res.data.map(job => {
             return {
                 ...job,
-                text: job.trackName,
-                value: job.trackName
+                text: job.trackTitle,
+                value: job.trackTitle
             }
         })
         // console.log(data)
@@ -123,12 +123,31 @@ let getScholarships = () => {
         method: 'get',
         url: apiUrls.scholarships
     })
+    .then(res => {
+        let data = res.data.map(scholarship => {
+            return {
+                ...scholarship,
+                text: scholarship.scholarshipName,
+                value: scholarship._id
+            }
+        })
+        store.commit(mutationTypes.ALL_SCHOLARSHIPS, data)
+    })
+    .catch(err => console.log(err))
 }
 
 let addScholarship = (data) => {
     return axios({
         method: 'post',
         url: apiUrls.scholarships,
+        data: data
+    })
+}
+
+let updateScholarship = (data) => {
+    return axios({
+        method: 'put',
+        url: apiUrls.scholarships+'/'+data._id,
         data: data
     })
 }
@@ -176,6 +195,37 @@ let addProject = (data) => {
     })
 }
 
+let getSkills = () => {
+    return axios({
+        method: 'get',
+        url: apiUrls.skills,
+    })
+    .then(res => {
+        let skills = res.data.map(skill => {
+            return {...skill, text: skill.name, value: skill.name}
+        })
+        store.commit(mutationTypes.SKILLS, skills)
+    })
+    .catch(err => {
+        console.log(err)
+    })
+}
+
+let addSkill = (data) => {
+    return axios({
+        method: 'post',
+        url: apiUrls.skills,
+        data: data
+    })
+}
+
+let deleteSkill = (id) => {
+    return axios({
+        method: 'delete',
+        url: apiUrls.skills+'/'+id,
+    })
+}
+
 export default {
     getUsers,
     createUser,
@@ -192,5 +242,9 @@ export default {
     getUserProjects,
     deleteUserProjects,
     getScholarships,
-    addScholarship
+    addScholarship,
+    updateScholarship,
+    getSkills,
+    addSkill,
+    deleteSkill
 }

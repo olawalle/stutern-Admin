@@ -2,10 +2,10 @@
   <div id="app">
         <div class="mynav">
               <img src="./assets/logo.png" alt="" class="logo" @click="toHome()">
-            <p class="logout" @click="logout">
+            <p v-if="isLoggedIn" class="logout" @click="logout">
                 <b>Log Out</b>
             </p>
-            <ul>
+            <ul v-if="isLoggedIn">
                 <li v-for="(link, i) in links" :key="i" @click="setActive(i)">
                   <router-link :to="'/'+link.link">
                     <span :class="link.state">{{link.link}}</span>
@@ -26,7 +26,8 @@ export default {
       links: [
         {link: 'Sets', state: 'active-link'}, 
         {link: 'Tracks', state: ''}, 
-        {link: 'Scholarships', state: ''}
+        {link: 'Scholarships', state: ''},
+        {link: 'Skills', state: ''}
       ]
     }
   },

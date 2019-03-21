@@ -31,9 +31,9 @@
                     <thead>
                         <tr>
                             <td>Name</td>
+                            <td>Photo</td>
                             <td>Cohurt</td>
-                            <td>Track</td>
-                            <td>photo</td>
+                            <td>Job title</td>
                             <td>Availability</td>
                             <td>Actions</td>
                         </tr>
@@ -43,12 +43,12 @@
                             <td>
                                 {{student.userName}}
                             </td>
+                            <td v-if="!student.userPhoto"><img src="../assets/user.png" alt="" width="50"></td>
+                            <td v-else><img :src="student.userPhoto" alt="" width="50"></td>
                             <td>
                                 {{student.userSet}}
                             </td>
                             <td>{{student.jobTitle}}</td>
-                            <td v-if="!student.userPhoto"><img src="../assets/user.png" alt="" width="50"></td>
-                            <td v-else><img :src="student.userPhoto" alt="" width="50"></td>
                             <td v-if="student.availability">Available</td>
                             <td v-else>Hired</td>
                             <td>
@@ -86,43 +86,6 @@
             </span>
         </b-modal>
         
-        <!-- <b-modal v-model="addTrackModal" centered title="Create new track" :hide-footer="true">
-            <span class="two">
-                <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    placeholder="e.g: Web development"
-                    v-model="newTrack.trackName"
-                    required />
-                <b-form-input
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    placeholder="e.g: Web developer"
-                    v-model="newTrack.trackTitle"
-                    required />
-                    
-                <b-form-textarea
-                    style="margin-bottom:20px; height: 55px;"
-                    type="text"
-                    placeholder="e.g: Track description"
-                    v-model="newTrack.trackDesc"
-                    rows="3"
-                    max-rows="6"
-                    required />
-
-                <b-form-file v-model="imgFile" class="inp" v-on:change="upload($event.target.files, 3)" placeholder="Upload track banner"></b-form-file>
-            </span>
-            <span class="three">
-                <button style="float: right;
-                                background-color: #00D7C4;
-                                border: 0;
-                                color: #fff;
-                                padding: 12px 30px;
-                                border-radius: 6px;
-                                margin-top: 20px;" @click="addNewTrack()">Create</button>
-            </span>
-        </b-modal> -->
-        
         <b-modal v-model="editUser" centered title="Edit User details" :hide-footer="true">
             <label>
                 Full name
@@ -134,14 +97,29 @@
                 required/>
 
             <label>
+                Short description
+            </label>
+            <b-form-textarea
+                style="margin-bottom:20px; height: 55px;"
+                type="text"
+                v-model="selectedUser.userDesc"
+                rows="3"
+                required />
+
+            <label>
                 Cohurt
             </label>
             <b-form-select style="height: 55px; margin-bottom:20px;" @change="change($event, 1)" v-model="selectedUser.userSet" :options="sets" />
 
             <label>
-                Track
+                Job title
             </label>
             <b-form-select style="margin-bottom:20px; height: 55px;" @change="change($event, 2)" v-model="selectedUser.jobTitle" :options="jobTitles" />
+
+            <label>Skill(s)</label>
+            <b-form-group>
+                <b-form-checkbox-group v-model="selectedUser.userSkills" :options="skills" />
+            </b-form-group>
 
             <label>
                 Availability
@@ -179,6 +157,16 @@
                 placeholder="Full name" />
                 
             <label>
+                Short description
+            </label>
+            <b-form-textarea
+                style="margin-bottom:20px; height: 55px;"
+                type="text"
+                v-model="newUser.userDesc"
+                rows="3"
+                required />
+                
+            <label>
                 Photo
             </label>
             <b-form-file v-model="imgFile" class="inp" v-on:change="upload($event.target.files, 1)" placeholder="Upload User Photo"></b-form-file>
@@ -189,13 +177,22 @@
             <b-form-select style="margin-bottom:20px; height: 55px;" v-model="newUser.userSet" :options="sets" />
 
             <label>
-                Track
+                Job title
             </label>
             <b-form-select style="margin-bottom:20px; height: 55px;" v-model="newUser.jobTitle" :options="jobTitles" />
 
-            <b-form-group label="" style="margin-bottom:20px; height: 55px;">
+            <label>Skill(s)</label>
+            <b-form-group>
+                <b-form-checkbox-group v-model="newUser.userSkills" :options="skills" />
+            </b-form-group>
+
+            <label>Scholarship(s)</label>
+            <b-form-group>
+                <b-form-checkbox-group v-model="newUser.userScholarship" :options="scholarships" />
+            </b-form-group>
+
+            <b-form-group label="" style="margin-bottom:20px; padding-top: 12px; height: 55px; border-top: 1px solid #eee">
                 <b-form-radio-group  v-model="newUser.availability" :options="availabilities"></b-form-radio-group>
-                <!-- <b-form-radio " v-model="selectedUser.availability" name="some-radios">Hired</b-form-radio> -->
             </b-form-group>
             
             <button style="float: right;
@@ -237,13 +234,20 @@ export default {
         jobTitle: null,
         userSet: null,
         userSetid: '',
-        userPhoto: ''
+        userPhoto: '',
+        userSkills: [],
+        userDesc: '',
+        userScholarship: []
       },
       selectedUser: {
         userName: '',
         jobTitle: '',
         availability: '',
-        userSet: ''
+        userDesc: '',
+        userPhoto: '',
+        userSkills: [],
+        userScholarship: []
+        // userSet: ''
         // userSetid: ''
       },
       newObj: {
@@ -272,7 +276,9 @@ export default {
     ...mapGetters({
         sets: 'getSets',
         setStudents: 'getSetStudents',
-        jobTitles: 'getJobTitles'
+        jobTitles: 'getJobTitles',
+        scholarships: 'getAllScholarships',
+        skills: 'getSkills',
     }),
     set () {
         return this.sets[0].value
@@ -382,6 +388,7 @@ export default {
         myServices.updateUser(this.selectedUser)
         .then(res => {
             console.log(res)
+            myServices.getSetStudents(this.set)
             this.editUser = false
         })
         .catch(err => {
@@ -417,8 +424,8 @@ export default {
         this.createUserModal = true
     },
     submitCreate () {
-        // this.newUser.userSetid = this.sets.find(set => set.setName === this.newUser.userSet)._id
-        console.log(this.newUser)
+        this.newUser.userSetid = this.sets.find(set => set.setName === this.newUser.userSet)._id
+        // console.log(this.newUser)
         myServices.createUser(this.newUser)
         .then(res => {
             console.log(res)
@@ -435,6 +442,8 @@ export default {
     myServices.getUsers()
     myServices.getSets()
     myServices.getJobTitles()
+    myServices.getScholarships()
+    myServices.getSkills()
     myServices.getSetStudents(this.set)
     this.test()
   },

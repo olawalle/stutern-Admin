@@ -18,7 +18,9 @@ export default new Vuex.Store({
     students: [],
     setStudents: [],
     jobTitles: [],
-    selectedStudent: {}
+    selectedStudent: {},
+    allScholarships: [],
+    skills: []
   },
   getters: {
     getToken: (state) => {
@@ -26,6 +28,9 @@ export default new Vuex.Store({
     },
     logginStatus: (state) => {
       return state.loginStatus
+    },
+    getSkills: (state) => {
+      return state.skills
     },
     getSets: (state) => {
       return state.sets
@@ -35,6 +40,9 @@ export default new Vuex.Store({
     },
     getSetStudents: (state) => {
       return state.setStudents
+    },
+    getAllScholarships: (state) => {
+      return state.allScholarships
     },
     getJobTitles: (state) => {
       return state.jobTitles
@@ -61,6 +69,12 @@ export default new Vuex.Store({
     },
     [mutationTypes.JOB_TITLES] (state, data) {
       state.jobTitles = data
+    },
+    [mutationTypes.SKILLS] (state, data) {
+      state.skills = data
+    },
+    [mutationTypes.ALL_SCHOLARSHIPS] (state, data) {
+      state.allScholarships = data
     },
     [mutationTypes.CLEAR_STORE] (state) {
       state = {   
