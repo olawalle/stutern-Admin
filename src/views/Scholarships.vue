@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">        
+    <div class="wrapper">
         <b-row class="sect-two">
             <b-col sm="12">
                 <div class="full-content">
@@ -10,8 +10,10 @@
             </b-col>
 
             <b-col class="card-container" v-for="(scholarship, i) in scholarships" :key="i" sm="6" xs="12">
-                <div class="card">    
-                    <img class="card-img" :src="scholarship.banner" alt="">
+                <div class="card">
+                    <div class="card-img-wrap">
+                        <img class="card-img" :src="scholarship.banner" alt="">
+                    </div>
                     <p class="card-text-heading">
                         {{scholarship.scholarshipName}} - {{scholarship.scholarshipFacilitator}}
                     </p>
@@ -29,17 +31,17 @@
                 </div>
             </b-col>
 
-            
+
             <b-col style="text-align: center" sm="12" xs="12" v-if="scholarships.length === 0">
-                <img src="../assets/empty.svg" class="empty-img" alt="">
-                <p class="empty">
-                    There are no scholarships
+                <img src="../assets/empty.svg" alt="" style="width: 30%; margin: 30px 35%">
+                <p style="width: 100%; text-align: center; font-size: 16px; font-weight: 600">
+                    There is nothing here. Create a set, tracks, scholarships and skills then start creating student records.
                 </p>
             </b-col>
         </b-row>
-        
+
         <b-modal v-model="addScholarshipModal" centered title="Create new scholarship" :hide-footer="true">
-            
+
             <span class="two">
                 <label>
                 Scholarship Name
@@ -57,7 +59,8 @@
                     type="text"
                     v-model="newscholarship.scholarshipTitle"
                     required />
-                    <label>
+
+            <label>
                 Scholarship Faciltator
             </label>
                 <b-form-input
@@ -66,9 +69,19 @@
                     v-model="newscholarship.scholarshipFacilitator"
                     required />
 
-                    <label>
+            <label>
+                Scholarship Visioner profile
+            </label>
+                <b-form-textarea
+                    style="margin-bottom:20px; height: 55px;"
+                    type="text"
+                    v-model="newscholarship.visionerProfile"
+                    rows="15"
+                    required />
+
+            <label>
                 Scholarship Description
-            </label>                    
+            </label>
                 <b-form-textarea
                     style="margin-bottom:20px; height: 55px;"
                     type="text"
@@ -87,7 +100,7 @@
                     required />
 
             <label>
-                Scholarship Banner
+                Scholarship Banner (1365 * 596px) <img v-if="isUploading"  src="../assets/loading.svg" class="spin-img" alt="">
             </label>
                 <b-form-file v-model="imgFile" class="" v-on:change="upload($event.target.files, 1)" placeholder="Upload scholarship banner"></b-form-file>
             </span>
@@ -102,7 +115,7 @@
             </span>
         </b-modal>
 
-        
+
         <b-modal v-model="editScholarshipModal" centered title="Edit scholarship" :hide-footer="true">
             <span class="two">
                  <label>
@@ -121,7 +134,8 @@
                     type="text"
                     v-model="selectedScholarship.scholarshipTitle"
                     required />
-                    <label>
+
+            <label>
                 Scholarship Faciltator
             </label>
                 <b-form-input
@@ -130,9 +144,19 @@
                     v-model="selectedScholarship.scholarshipFacilitator"
                     required />
 
-                    <label>
+            <label>
+                Scholarship Visioner profile
+            </label>
+                <b-form-textarea
+                    style="margin-bottom:20px; height: 55px;"
+                    type="text"
+                    v-model="selectedScholarship.visionerProfile"
+                    rows="15"
+                    required />
+
+            <label>
                 Scholarship Description
-            </label>                    
+            </label>
                 <b-form-textarea
                     style="margin-bottom:20px; height: 55px;"
                     type="text"
@@ -140,7 +164,7 @@
                     rows="15"
                     required />
 
-                    <label>
+            <label>
                 Scholarship Overview
             </label>
                 <b-form-textarea
@@ -151,7 +175,7 @@
                     required />
 
             <label>
-                Scholarship Banner
+                Scholarship Banner (1365 * 596px) <img v-if="isUploading"  src="../assets/loading.svg" class="spin-img" alt="">
             </label>
                 <b-form-file v-model="imgFile" class="" v-on:change="upload($event.target.files, 2)" placeholder="Upload scholarship banner"></b-form-file>
             </span>
@@ -168,19 +192,15 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+import axios from 'axios';
 import myServices from '../myServices';
-import { mapGetters } from 'vuex'
-import * as mutationTypes from '../mutationTypes'
-import axios from 'axios'
+import * as mutationTypes from '../mutationTypes';
+
 export default {
   data() {
     return {
-      cloudinary: {
-        // uploadPreset: 'f0zojmne',
-        uploadPreset: 'stutern_demo',
-        apiKey: '971377932646732',
-        cloudName: 'dl78ezj6d'
-      }, 
+      isUploading: false,
       imgFile: null,
       addScholarshipModal: false,
       editScholarshipModal: false,
@@ -190,7 +210,9 @@ export default {
         scholarshipDesc: '',
         scholarshipFacilitator: '',
         banner: '',
-        overView: ''
+        overView: '',
+        vision: '',
+        visionerProfile: '',
       },
       selectedScholarship: {
         scholarshipName: '',
@@ -198,113 +220,164 @@ export default {
         scholarshipDesc: '',
         scholarshipFacilitator: '',
         banner: '',
-        overView: ''
-      }
+        overView: '',
+        vision: '',
+        visionerProfile: '',
+      },
     };
   },
   computed: {
     ...mapGetters({
-        sets: 'getSets',
-        scholarships: 'getAllScholarships',
-        setStudents: 'getSetStudents'
-    })
+      sets: 'getSets',
+      scholarships: 'getAllScholarships',
+      setStudents: 'getSetStudents',
+      cloudinary: 'getCloudinaryPresets',
+    }),
   },
   methods: {
-    openEdit (id) {
-        this.selectedScholarship = this.scholarships.find(sch => sch._id === id)
-        this.editScholarshipModal = true
+    openEdit(id) {
+      this.selectedScholarship = this.scholarships.find(sch => sch._id === id);
+      this.editScholarshipModal = true;
     },
 
     makeid(length) {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let text = '';
+      const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < length; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
 
-        return text;
+      return text;
     },
 
-    upload (e, n) {
-      console.log(e)
-      const formData = new FormData()
+    upload(e, n) {
+      this.isUploading = true;
+      const formData = new FormData();
       formData.append('file', e[0]);
       formData.append('upload_preset', this.cloudinary.uploadPreset);
-      formData.append('public_id', this.makeid(20))
-      axios.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
-      .then(res => {
-        console.log(res)
-        n === 1 ? this.newscholarship.banner = res.data.secure_url : this.selectedScholarship.banner = res.data.secure_url
-      })
-      .catch(err => {
-        console.log(err.response) 
-      })
+      formData.append('public_id', this.makeid(20));
+      this.$http.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
+        .then((res) => {
+          this.isUploading = false;
+          n === 1 ? this.newscholarship.banner = res.body.secure_url : this.selectedScholarship.banner = res.body.secure_url;
+        })
+        .catch((err) => {
+          this.isUploading = false;
+          this.$swal({
+            title: 'Error',
+            type: 'error',
+            text: err.body.error.message,
+          });
+        });
     },
 
     openAddscholarship() {
-        this.addScholarshipModal = true
+      this.addScholarshipModal = true;
     },
 
-    addNewscholarship () {
-        myServices.addScholarship(this.newscholarship)
-        .then(res => {
-            console.log(res)
-            this.addScholarshipModal = false
-            myServices.getScholarships()
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    addNewscholarship() {
+      this.$swal({
+        title: 'Creating a new scholarship',
+        text: 'You are about to create a new scholarship!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+      })
+        .then((response) => {
+          if (response.value) {
+            myServices.addScholarship(this.newscholarship)
+              .then((res) => {
+                console.log(res);
+                this.addScholarshipModal = false;
+                myServices.getScholarships();
+                this.$swal({
+                  type: 'success',
+                  title: 'Success',
+                  text: 'Scholarship sucessfully created',
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                this.$swal({
+                  type: 'error',
+                  title: 'Error',
+                  text: err.response.data.error,
+                });
+              });
+          }
+        });
     },
 
-    
-    updateScholarship () {
-        // console.log(this.selectedScholarship)
-        myServices.updateScholarship(this.selectedScholarship)
-        .then(res => {
-            console.log(res)
-            this.editScholarshipModal = false
-            myServices.getScholarships()
-        })
-        .catch(err => {
-            console.log(err)
-            this.editScholarshipModal = false
-        })
+
+    updateScholarship() {
+      this.$swal({
+        title: 'Editing Scholarship',
+        text: 'You are about to edit the track!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+      })
+        .then((response) => {
+          if (response.value) {
+            myServices.updateScholarship(this.selectedScholarship)
+              .then((res) => {
+                console.log(res);
+                this.editScholarshipModal = false;
+                myServices.getScholarships();
+                this.$swal({
+                  type: 'success',
+                  title: 'Edit scholarship details',
+                  text: 'Scholarship sucessfully edited',
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                this.$swal({
+                  type: 'error',
+                  title: 'Error',
+                  text: err.response.data.error,
+                });
+              });
+          }
+        });
     },
 
-    log () {
-        console.log(this.scholarships)
+    log() {
+      console.log(this.scholarships);
     },
 
     edit(user) {
-        console.log(user)
-        this.editUser = true
-        this.selectedUser = user
+      console.log(user);
+      this.editUser = true;
+      this.selectedUser = user;
     },
     submitEdit() {
-        myServices.up(this.selectedUser)
-        .then(res => {
-            console.log(res)
-            this.editUser = false
+      myServices.up(this.selectedUser)
+        .then((res) => {
+          console.log(res);
+          this.editUser = false;
         })
-        .catch(err => {
-            console.log({...err})
-        })
+        .catch((err) => {
+          console.log({ ...err });
+        });
     },
 
     remove(id) {
-        myServices.deleteUser(id)
-        .then(res => {
-            console.log(res)
-            myServices.getUsers()
+      myServices.deleteUser(id)
+        .then((res) => {
+          console.log(res);
+          myServices.getUsers();
         })
-        .catch(err => {
-            console.log(err)
-        })
-    }
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   beforeMount() {
-    myServices.getScholarships()
+    myServices.getScholarships();
   },
 };
 </script>
@@ -334,8 +407,8 @@ export default {
     .inp {
         margin-top: 20px;
     }
-    .sect-two { 
-        padding: 60px 100px; 
+    .sect-two {
+        padding: 60px 100px;
         .name {
             color:#47b8a3;
             font-size: 25px;
@@ -395,19 +468,24 @@ export default {
             p {
                 margin: 12px 0px
             }
-            .card {      
+            .card {
                 background: #FFFFFF;
-                // box-shadow: 0px 2.5px 5px rgba(0, 0, 0, 0.05);  
-                padding: 0 !important;      
+                // box-shadow: 0px 2.5px 5px rgba(0, 0, 0, 0.05);
+                padding: 0 !important;
                 height: 500px;
                 border: 0 !important;
                 border-radius: 0 !important;
                 overflow: hidden;
-                .card-img {
+                .card-img-wrap {
                     height: 290px;
-                    margin: 0;
-                    border-radius: 0;
-                    margin-bottom: 15px
+                    width: 100%;
+                    overflow: hidden;
+                    .card-img {
+                        border-radius: 0;
+                        margin-bottom: 15px;
+                        height: 360px;
+                        width: auto
+                    }
                 }
                 .card-text-heading {
                     font-style: normal;
@@ -434,6 +512,11 @@ export default {
                     font-size: 16px;
                     padding: 0 20px !important;
                     color: #67747C;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 4;  /* Number of lines displayed before it truncate */
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                 }
                 .more {
                     font-style: normal;

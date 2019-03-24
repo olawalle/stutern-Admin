@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VuexPersistence from 'vuex-persist'
+import VuexPersistence from 'vuex-persist';
 
 
-import * as mutationTypes from "./mutationTypes";
+import * as mutationTypes from './mutationTypes';
+
 Vue.use(Vuex);
 
 const vuexSessionStorage = new VuexPersistence({
-  storage: window.localStorage
-})
+  storage: window.localStorage,
+});
 
 export default new Vuex.Store({
   state: {
@@ -20,72 +21,61 @@ export default new Vuex.Store({
     jobTitles: [],
     selectedStudent: {},
     allScholarships: [],
-    skills: []
+    skills: [],
   },
   getters: {
-    getToken: (state) => {
-      return state.token
-    },
-    logginStatus: (state) => {
-      return state.loginStatus
-    },
-    getSkills: (state) => {
-      return state.skills
-    },
-    getSets: (state) => {
-      return state.sets
-    },
-    getStudents: (state) => {
-      return state.students
-    },
-    getSetStudents: (state) => {
-      return state.setStudents
-    },
-    getAllScholarships: (state) => {
-      return state.allScholarships
-    },
-    getJobTitles: (state) => {
-      return state.jobTitles
-    },
-    getSelectedStudent: (state) => {
-      return state.selectedStudent
-    }
+    getToken: state => state.token,
+    logginStatus: state => state.loginStatus,
+    getSkills: state => state.skills,
+    getSets: state => state.sets,
+    getStudents: state => state.students,
+    getSetStudents: state => state.setStudents,
+    getAllScholarships: state => state.allScholarships,
+    getJobTitles: state => state.jobTitles,
+    getSelectedStudent: state => state.selectedStudent,
+    getCloudinaryPresets: () => ({
+      uploadPreset: 'stutern_api',
+      // uploadPreset: 'stutern_demo',
+      apiKey: '537473421397761',
+      cloudName: 'dtdjxcklu',
+      // cloudName: 'dl78ezj6d',
+    }),
   },
   mutations: {
-    [mutationTypes.TOKEN] (state, data) {
-      state.token = data
+    [mutationTypes.TOKEN](state, data) {
+      state.token = data;
     },
-    [mutationTypes.ALL_STUDENTS] (state, data) {
-      state.students = data
+    [mutationTypes.ALL_STUDENTS](state, data) {
+      state.students = data;
     },
-    [mutationTypes.ALL_SETS] (state, data) {
-      state.sets = data
+    [mutationTypes.ALL_SETS](state, data) {
+      state.sets = data;
     },
-    [mutationTypes.SET_STUDENTS] (state, data) {
-      state.setStudents = data
+    [mutationTypes.SET_STUDENTS](state, data) {
+      state.setStudents = data;
     },
-    [mutationTypes.SELECTED_STUDENT] (state, data) {
-      state.selectedStudent = data
+    [mutationTypes.SELECTED_STUDENT](state, data) {
+      state.selectedStudent = data;
     },
-    [mutationTypes.JOB_TITLES] (state, data) {
-      state.jobTitles = data
+    [mutationTypes.JOB_TITLES](state, data) {
+      state.jobTitles = data;
     },
-    [mutationTypes.SKILLS] (state, data) {
-      state.skills = data
+    [mutationTypes.SKILLS](state, data) {
+      state.skills = data;
     },
-    [mutationTypes.ALL_SCHOLARSHIPS] (state, data) {
-      state.allScholarships = data
+    [mutationTypes.ALL_SCHOLARSHIPS](state, data) {
+      state.allScholarships = data;
     },
-    [mutationTypes.CLEAR_STORE] (state) {
-      state = {   
-      }
+    [mutationTypes.CLEAR_STORE](state) {
+      state = {
+      };
     },
-    [mutationTypes.LOGIN_STATUS] (state, data) {
-      state.loginStatus = data
-    }
+    [mutationTypes.LOGIN_STATUS](state, data) {
+      state.loginStatus = data;
+    },
   },
   actions: {
 
   },
-  plugins: [vuexSessionStorage.plugin]
+  plugins: [vuexSessionStorage.plugin],
 });

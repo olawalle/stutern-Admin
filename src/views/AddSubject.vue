@@ -50,7 +50,8 @@
     </div>
 </template>
 <script>
-import services from '../myServices'
+import services from '../myServices';
+
 export default {
   data() {
     return {
@@ -61,7 +62,7 @@ export default {
         { value: null, text: 'Class' },
         { text: 'SS 1', value: 'SS 1' },
         { text: 'SS 2', value: 'SS 2' },
-        { text: 'SS 3', value: 'SS 3' }
+        { text: 'SS 3', value: 'SS 3' },
       ],
       radios: [
         { text: 'Paid', value: 'first' },
@@ -70,20 +71,20 @@ export default {
     };
   },
   methods: {
-    addToList () {
-        if (this.subjectName!== '' && this.selectedClass !== null) {
-            let data = {
-                name: this.subjectName.toUpperCase(),
-                class: this.selectedClass.toUpperCase()
-            }
-            console.log(data)
-            services.addSubject(data)
-            .then(res => {
-                services.getAllSubjects()
-            })
-        }
-    }
-  }
+    addToList() {
+      if (this.subjectName !== '' && this.selectedClass !== null) {
+        const data = {
+          name: this.subjectName.toUpperCase(),
+          class: this.selectedClass.toUpperCase(),
+        };
+        console.log(data);
+        services.addSubject(data)
+          .then((res) => {
+            services.getAllSubjects();
+          });
+      }
+    },
+  },
 
 };
 </script>

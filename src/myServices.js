@@ -1,250 +1,205 @@
-import axios from 'axios'
-import * as apiUrls from './apiUrls'
-import store from './store'
-import * as mutationTypes from './mutationTypes'
+import axios from 'axios';
+import * as apiUrls from './apiUrls';
+import store from './store';
+import * as mutationTypes from './mutationTypes';
 
 
-let getUsers = () => {
-    return axios({
-        method: 'get',
-        url: apiUrls.allUsers
-    })
-    .then(res => {
-       store.commit(mutationTypes.ALL_STUDENTS, res.data)
-    })
-    .catch(err => console.log(err))
-}
+const getUsers = () => axios({
+  method: 'get',
+  url: apiUrls.allUsers,
+})
+  .then((res) => {
+    store.commit(mutationTypes.ALL_STUDENTS, res.data);
+  })
+  .catch(err => console.log(err));
 
-let createUser = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.allUsers,
-        data: data
-    })
-}
+const createUser = data => axios({
+  method: 'post',
+  url: apiUrls.allUsers,
+  data,
+});
 
-let deleteUser = (id) => {
-    return axios({
-        method: 'delete',
-        url: apiUrls.allUsers+'/'+id
-    })
-}
+const deleteUser = id => axios({
+  method: 'delete',
+  url: `${apiUrls.allUsers}/${id}`,
+});
 
-let updateUser = (user) => {
-    return axios({
-        method: 'put',
-        url: apiUrls.allUsers+'/'+user._id,
-        data: user
-    })
-}
+const updateUser = user => axios({
+  method: 'put',
+  url: `${apiUrls.allUsers}/${user._id}`,
+  data: user,
+});
 
-let getSets = () => {
-    return axios({
-        method: 'get',
-        url: apiUrls.allSets
-    })
-    .then(res => {
-        let data = res.data.map(set => {
-            return {
-                ...set,
-                text: set.setName,
-                value: set.setName
-            }
-        })
-       store.commit(mutationTypes.ALL_SETS, data)
-    })
-    .catch(err => console.log(err))
-}
+const getSets = () => axios({
+  method: 'get',
+  url: apiUrls.allSets,
+})
+  .then((res) => {
+    const data = res.data.map(set => ({
+      ...set,
+      text: set.setName,
+      value: set.setName,
+    }));
+    store.commit(mutationTypes.ALL_SETS, data);
+  })
+  .catch(err => console.log(err));
 
-let postSet = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.allSets,
-        data: data
-    })
-}
+const postSet = data => axios({
+  method: 'post',
+  url: apiUrls.allSets,
+  data,
+});
 
-let getSetStudents = (set) => {
-    return axios({
-        method: 'get',
-        url: apiUrls.allSets+'/'+set
-    })
-    .then(res => {
-        // let data = res.data.map(set => {
-        //     return {
-        //         ...set,
-        //         text: set.setName,
-        //         value: set.setName
-        //     }
-        // })
-       store.commit(mutationTypes.SET_STUDENTS, res.data)
-    })
-    .catch(err => console.log(err))
-}
+const getSetStudents = set => axios({
+  method: 'get',
+  url: `${apiUrls.allSets}/${set}`,
+})
+  .then((res) => {
+    // let data = res.data.map(set => {
+    //     return {
+    //         ...set,
+    //         text: set.setName,
+    //         value: set.setName
+    //     }
+    // })
+    store.commit(mutationTypes.SET_STUDENTS, res.data);
+  })
+  .catch(err => console.log(err));
 
 
-let getJobTitles = () => {
-    return axios({
-        method: 'get',
-        url: apiUrls.tracks
-    })
-    .then(res => {
-        let data = res.data.map(job => {
-            return {
-                ...job,
-                text: job.trackTitle,
-                value: job.trackTitle
-            }
-        })
-        // console.log(data)
-       store.commit(mutationTypes.JOB_TITLES, data)
-    })
-    .catch(err => console.log(err))
-}
+const getJobTitles = () => axios({
+  method: 'get',
+  url: apiUrls.tracks,
+})
+  .then((res) => {
+    const data = res.data.map(job => ({
+      ...job,
+      text: job.trackTitle,
+      value: job.trackTitle,
+    }));
+    // console.log(data)
+    store.commit(mutationTypes.JOB_TITLES, data);
+  })
+  .catch(err => console.log(err));
 
-let addJobTitle = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.tracks,
-        data: data
-    })
-}
+const addJobTitle = data => axios({
+  method: 'post',
+  url: apiUrls.tracks,
+  data,
+});
 
-let updateJobTitle = (data) => {
-    return axios({
-        method: 'put',
-        url: apiUrls.tracks+'/'+data._id,
-        data: data
-    })
-}
+const updateJobTitle = data => axios({
+  method: 'put',
+  url: `${apiUrls.tracks}/${data._id}`,
+  data,
+});
 
-let getScholarships = () => {
-    return axios({
-        method: 'get',
-        url: apiUrls.scholarships
-    })
-    .then(res => {
-        let data = res.data.map(scholarship => {
-            return {
-                ...scholarship,
-                text: scholarship.scholarshipName,
-                value: scholarship._id
-            }
-        })
-        store.commit(mutationTypes.ALL_SCHOLARSHIPS, data)
-    })
-    .catch(err => console.log(err))
-}
+const getScholarships = () => axios({
+  method: 'get',
+  url: apiUrls.scholarships,
+})
+  .then((res) => {
+    const data = res.data.map(scholarship => ({
+      ...scholarship,
+      text: scholarship.scholarshipName,
+      value: scholarship._id,
+    }));
+    store.commit(mutationTypes.ALL_SCHOLARSHIPS, data);
+  })
+  .catch(err => console.log(err));
 
-let addScholarship = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.scholarships,
-        data: data
-    })
-}
+const addScholarship = data => axios({
+  method: 'post',
+  url: apiUrls.scholarships,
+  data,
+});
 
-let updateScholarship = (data) => {
-    return axios({
-        method: 'put',
-        url: apiUrls.scholarships+'/'+data._id,
-        data: data
-    })
-}
+const updateScholarship = data => axios({
+  method: 'put',
+  url: `${apiUrls.scholarships}/${data._id}`,
+  data,
+});
 
-let postJob = (data) => {
-    return axios({
-        method: 'get',
-        url: apiUrls.jobTitles,
-        data: data
-    })
-    .then(res => {
-        console.log(res)
-    //     let data = res.data.map(job => {
-    //         return {
-    //             ...job,
-    //             text: set.jobTitle,
-    //             value: set.jobTitle
-    //         }
-    //     })
-    //    store.commit(mutationTypes.JOB_TITLES, data)
-    })
-    .catch(err => console.log(err))
-}
+const postJob = data => axios({
+  method: 'get',
+  url: apiUrls.jobTitles,
+  data,
+});
 
+const getUserProjects = id => axios({
+  method: 'get',
+  url: `${apiUrls.projects}/${id}`,
+});
 
-let getUserProjects = (id) => {
-    return axios({
-        method: 'get',
-        url: apiUrls.projects+'/'+id,
-    })
-}
+const deleteUserProjects = id => axios({
+  method: 'delete',
+  url: `${apiUrls.projects}/${id}`,
+});
 
-let deleteUserProjects = (id) => {
-    return axios({
-        method: 'delete',
-        url: apiUrls.projects+'/'+id
-    })
-}
+const updateUserProjects = id => axios({
+  method: 'put',
+  url: `${apiUrls.projects}/${id}`,
+});
 
-let addProject = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.projects,
-        data: data
-    })
-}
+const addProject = data => axios({
+  method: 'post',
+  url: apiUrls.projects,
+  data,
+});
 
-let getSkills = () => {
-    return axios({
-        method: 'get',
-        url: apiUrls.skills,
-    })
-    .then(res => {
-        let skills = res.data.map(skill => {
-            return {...skill, text: skill.name, value: skill.name}
-        })
-        store.commit(mutationTypes.SKILLS, skills)
-    })
-    .catch(err => {
-        console.log(err)
-    })
-}
+const getSkills = () => axios({
+  method: 'get',
+  url: apiUrls.skills,
+})
+  .then((res) => {
+    const skills = res.data.map(skill => ({ ...skill, text: skill.name, value: skill.name }));
+    store.commit(mutationTypes.SKILLS, skills);
+  })
+  .catch((err) => {
+    // console.log(err);
+  });
 
-let addSkill = (data) => {
-    return axios({
-        method: 'post',
-        url: apiUrls.skills,
-        data: data
-    })
-}
+const addSkill = data => axios({
+  method: 'post',
+  url: apiUrls.skills,
+  data,
+});
 
-let deleteSkill = (id) => {
-    return axios({
-        method: 'delete',
-        url: apiUrls.skills+'/'+id,
-    })
-}
+const deleteSkill = id => axios({
+  method: 'delete',
+  url: `${apiUrls.skills}/${id}`,
+});
+
+const fileUpload = data => axios({
+  method: 'get',
+  url: 'https://api.cloudinary.com/v1_1/dl78ezj6d/upload',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  data,
+});
 
 export default {
-    getUsers,
-    createUser,
-    deleteUser,
-    updateUser,
-    getSets,
-    postSet,
-    getSetStudents,
-    getJobTitles,
-    addJobTitle,
-    updateJobTitle,
-    postJob,
-    addProject,
-    getUserProjects,
-    deleteUserProjects,
-    getScholarships,
-    addScholarship,
-    updateScholarship,
-    getSkills,
-    addSkill,
-    deleteSkill
-}
+  getUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+  getSets,
+  postSet,
+  getSetStudents,
+  getJobTitles,
+  addJobTitle,
+  updateJobTitle,
+  postJob,
+  addProject,
+  getUserProjects,
+  deleteUserProjects,
+  updateUserProjects,
+  getScholarships,
+  addScholarship,
+  updateScholarship,
+  getSkills,
+  addSkill,
+  deleteSkill,
+  fileUpload,
+};

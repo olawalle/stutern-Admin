@@ -10,7 +10,7 @@
                 </b>
             </h2>
             <h4>
-                This is where the magic happens! Log in with your admin credentials to proceed
+                This is where the magic happens! Log in with your admin passcode to proceed
             </h4>
             <br>
             <b-form-input id="inputLive"
@@ -18,7 +18,7 @@
                   class="main-inp"
                   type="text"
                   aria-describedby="inputLiveHelp inputLiveFeedback"
-                  placeholder="Enter Code">
+                  placeholder="Enter Passcode">
             </b-form-input>
              <!-- <b-form-input id="inputLive"
                   v-model="password"
@@ -33,65 +33,42 @@
                 Login
             </button>
             <p class="footer">
-                Don’t have credentials? <b>Contact</b> the engineering team
+                Don’t have credentials? <b>Contact</b> the Stutern team
             </p>
         </div>
     </div>
 </template>
 <script>
-import services from '../myServices'
-import axios from 'axios'
-import * as mutationTypes from '../mutationTypes'
-import { mapGetters } from 'vuex'
+// import axios from 'axios';
+import { mapGetters } from 'vuex';
+// import services from '../myServices';
+import * as mutationTypes from '../mutationTypes';
+
 export default {
-  computed: {
-    // idState () {
-    //   this.name.length > 2 ? initialPwrdStatetrue : false
-    // },
-  },
   data() {
     return {
       code: '',
       password: '',
-      btnDisable: false
+      btnDisable: false,
     };
   },
   computed: {
     ...mapGetters({
-        token: 'getToken'
-    })
+      token: 'getToken',
+    }),
   },
   methods: {
     login() {
-        // this.btnDisable = true
-        // let data = {
-        //     email: this.email,
-        //     password: this.password
-        // }
-        // services.userLogin(data)
-        // .then(res => {
-        //     this.btnDisable = false
-        //     let token = res.data.token
-        //     this.$store.commit(mutationTypes.TOKEN, token)
-        //     //   Store the access token in session, so users who reload can still access resources
-        //     window.sessionStorage.setItem('accessToken', token)
-        //     //   Add authorization header to all future axios requests, until the user logs out
-        //     axios.defaults.headers.common['x-access-token'] = window.sessionStorage.accessToken
-        //     services.getAllSubjects()
-        //     // services.getSubjectByClassUrl('SS 1')
-        //     // services.getSubjectByClassUrl('SS 2')
-        //     // services.getSubjectByClassUrl('SS 3')
-        //     console.log(res)
-        //     this.$store.commit(mutationTypes.LOGIN_STATUS, true)
-        //     this.$router.push({ name: 'subjects' });
-        // })
-        if (this.code === 'stutern_12345') {
-            this.$store.commit(mutationTypes.LOGIN_STATUS, true)
-            this.$router.push ('/sets')
-        } else {
-            alert('wrong passcode!')
-        }
+      if (this.code === 'stutern_12345') {
+        this.$store.commit(mutationTypes.LOGIN_STATUS, true);
+        this.$router.push('/sets');
+      } else {
+        alert('wrong passcode!');
+      }
     },
+  },
+  mounted() {
+    this.$store.commit(mutationTypes.LOGIN_STATUS, false);
   },
 };
 </script>

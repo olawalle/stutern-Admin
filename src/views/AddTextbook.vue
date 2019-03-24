@@ -55,17 +55,18 @@
     </div>
 </template>
 <script>
-import services from '../myServices'
-import axios from 'axios'
-import Vue from 'vue'
+import axios from 'axios';
+import Vue from 'vue';
+import services from '../myServices';
+
 export default {
   data() {
     return {
       cloudinary: {
         uploadPreset: 'f0zojmne',
-        apiKey: '971377932646732',
-        cloudName: 'dl78ezj6d'
-      }, 
+        apiKey: '537473421397761',
+        cloudName: 'dtdjxcklu',
+      },
       imgFile: null,
       pdfFile: null,
       selected: null,
@@ -92,37 +93,37 @@ export default {
     };
   },
   methods: {
-    uploadTextBook () {
+    uploadTextBook() {
       if (this.pdfFile !== null && this.title !== '' && this.selectedSubject !== null && this.selectedClass !== null && this.thumbnailUrl !== '') {
-        let data = {
-            book: this.pdfFile,
-            title: this.title,
-            subject: this.selectedSubject.toUpperCase(),
-            class: this.selectedClass.toUpperCase(),
-            isFree: this.isFree,
-            thumbnailUrl: this.thumbnailUrl
-        }
-        console.log(data)
+        const data = {
+          book: this.pdfFile,
+          title: this.title,
+          subject: this.selectedSubject.toUpperCase(),
+          class: this.selectedClass.toUpperCase(),
+          isFree: this.isFree,
+          thumbnailUrl: this.thumbnailUrl,
+        };
+        console.log(data);
         services.addTextbook(data)
-        .then(res => {
-            console.log(res)
-        })
+          .then((res) => {
+            console.log(res);
+          });
       } else {
-        alert('fill all the fields naaaa')
+        alert('fill all the fields naaaa');
       }
     },
-    upload (e) {
-      console.log(e)
-      const formData = new FormData()
+    upload(e) {
+      console.log(e);
+      const formData = new FormData();
       formData.append('file', e[0]);
       formData.append('upload_preset', this.cloudinary.uploadPreset);
       formData.append('tags', 'stutern textbook thumbnail');
       this.$http.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/upload`, formData)
-      .then(res => {
-        console.log(res.data.secure_url)
-      })
-    }
-  }
+        .then((res) => {
+          console.log(res.body.secure_url);
+        });
+    },
+  },
 
 };
 </script>

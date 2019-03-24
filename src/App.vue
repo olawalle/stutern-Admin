@@ -17,30 +17,30 @@
   </div>
 </template>
 <script>
-import services from './myServices'
-import * as mutationTypes from './mutationTypes'
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import services from './myServices';
+import * as mutationTypes from './mutationTypes';
+
 export default {
-  data () {
+  data() {
     return {
       links: [
-        {link: 'Sets', state: 'active-link'}, 
-        {link: 'Tracks', state: ''}, 
-        {link: 'Scholarships', state: ''},
-        {link: 'Skills', state: ''}
-      ]
-    }
+        { link: 'Sets', state: '' },
+        { link: 'Tracks', state: '' },
+        { link: 'Scholarships', state: '' },
+        { link: 'Skills', state: '' },
+      ],
+    };
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'logginStatus'
+      isLoggedIn: 'logginStatus',
     }),
-    homeLink () {
+    homeLink() {
       if (this.isLoggedIn) {
-        return '/sets'
-      } else {
-        return '/'
+        return '/Sets';
       }
+      return '/';
     },
   },
   methods: {
@@ -50,25 +50,30 @@ export default {
     //     console.log(res)
     //   })
     // }
-    toHome () {
-      this.$router.push(this.homeLink)
+    toHome() {
+      this.$router.push(this.homeLink);
     },
-    logout () {
-      this.$store.commit(mutationTypes.CLEAR_STORE)
-      this.$store.commit(mutationTypes.LOGIN_STATUS, false)
-      window.sessionStorage.removeItem('accessToken')
-      this.$router.push({name: 'welcome'})
+    logout() {
+      this.$store.commit(mutationTypes.CLEAR_STORE);
+      this.$store.commit(mutationTypes.LOGIN_STATUS, false);
+      // window.sessionStorage.removeItem('accessToken');
+      this.$router.push({ name: 'welcome' });
     },
-    setActive (i) {
-      this.links.map(link => {
-        return link.state = ''
-      })
-      this.links[i].state = 'active-link'
-    }
+    setActive(i) {
+      this.links.map(link => link.state = '');
+      this.links[i].state = 'active-link';
+    },
   },
-  mounted () {
-  }
-}
+  mounted() {
+    // console.log(this.$route)
+    this.links.map((link) => {
+      link => link.state = '';
+      if (link.link.toLowerCase() === this.$route.name.toLowerCase()) {
+        link.state = 'active-link';
+      }
+    });
+  },
+};
 </script>
 <style>
 @import "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
@@ -228,5 +233,25 @@ export default {
         color: #67747C !important;
         font-weight: 600;
         margin-bottom: 0 !important
+    }
+    .spin-img {
+        animation-name: spin;
+        animation-duration: 2000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        width: 20px;
+        margin-left: 10px
+    }
+    @-moz-keyframes spin {
+        from { -moz-transform: rotate(0deg); }
+        to { -moz-transform: rotate(360deg); }
+    }
+    @-webkit-keyframes spin {
+        from { -webkit-transform: rotate(0deg); }
+        to { -webkit-transform: rotate(360deg); }
+    }
+    @keyframes spin {
+        from {transform:rotate(0deg);}
+        to {transform:rotate(360deg);}
     }
 </style>

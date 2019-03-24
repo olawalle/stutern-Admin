@@ -9,6 +9,14 @@
                     {{userDetails.jobTitle}}
                 </p>
                 <p class="userdesc">
+                    {{userDetails.userEmail}}
+                </p>
+                <p class="link">
+                    <a :href="userDetails.userCV" target="_blank" rel="noopener noreferrer">
+                        {{userDetails.userCV}}
+                    </a>
+                </p>
+                <p class="userdesc">
                     {{userDetails.userDesc}}
                 </p>
             </b-col>
@@ -27,7 +35,7 @@
                 </button>
             </b-col>
             <b-col class="card-container" v-for="(project, i) in userProjects" :key="i" sm="6" xs="12">
-                <div class="card">    
+                <div class="card">
                     <img class="card-img" :src="project.projectBanner" alt="">
                     <p class="card-text-heading">
                         {{project.projectTitle}}
@@ -46,11 +54,11 @@
                 </div>
             </b-col>
 
-            
+
             <b-col style="text-align: center" sm="12" xs="12" v-if="userProjects.length === 0">
                 <img src="../assets/empty.svg" class="empty-img" alt="">
                 <p class="empty">
-                    This user has no projects 
+                    This user has no projects
                     <button @click="openAdd()">
                         Create project
                     </button>
@@ -76,16 +84,20 @@
                 rows="3"
                 max-rows="6"
                 />
-            
+
+
+            <label>
+                Scholarship Banner <img v-if="isUploading"  src="../assets/loading.svg" class="spin-img" alt="">
+            </label>
             <b-form-file v-model="imgFile" class="inp" v-on:change="upload($event.target.files)" placeholder="Upload Project Banner"></b-form-file>
 
-            <button class="edit" :disabled="addDisabled" style="float: right;
+            <button class="edit" style="float: right;
                                         background-color: #00D7C4;
                                         border: 0;
                                         color: #fff;
                                         padding: 12px 30px;
                                         border-radius: 6px;
-                                        margin-top: 20px;" @click="addToList()">Create Project</button>
+                                        margin-top: 20px;" @click="addToList()">Create ucuProject</button>
         </b-modal>
 
         <b-modal v-model="editProject" centered title="Edit Project" :hide-footer="true">
@@ -107,7 +119,11 @@
                 rows="3"
                 max-rows="6"
                 />
-            
+
+
+            <label>
+                Scholarship Banner <img v-if="isUploading"  src="../assets/loading.svg" class="spin-img" alt="">
+            </label>
             <button class="edit" style="float: right;
                                         background-color: #00D7C4;
                                         border: 0;
@@ -119,21 +135,17 @@
     </div>
 </template>
 <script>
-import services from '../myServices'
-import axios from 'axios'
+import axios from 'axios';
+import services from '../myServices';
+
 export default {
   data() {
     return {
-      cloudinary: {
-        // uploadPreset: 'f0zojmne',
-        uploadPreset: 'stutern_demo',
-        apiKey: '971377932646732',
-        cloudName: 'dl78ezj6d'
-      }, 
       editProject: false,
       addModal: false,
       imgFile: null,
       addDisabled: true,
+      isUploading: false,
       selectedProject: {},
       userDetails: {},
       userProjects: [],
@@ -141,91 +153,174 @@ export default {
         projectTitle: '',
         projectDesc: '',
         projectBanner: '',
-      }
+      },
     };
   },
-  beforeMount () {
-      this.getProjects()
+  computed: {
+    cloudinary: 'getCloudinaryPresets',
+  },
+  beforeMount() {
+    this.getProjects();
   },
 
   methods: {
-    getProjects () {
-        services.getUserProjects(this.$route.params.id)
-        .then(res => {
-            console.log(res)
-            this.userDetails = res.data.userDetails
-            this.userProjects = res.data.userProjects
+    getProjects() {
+      services.getUserProjects(this.$route.params.id)
+        .then((res) => {
+          console.log(res);
+          this.userDetails = res.data.userDetails;
+          this.userProjects = res.data.userProjects;
         })
-        .catch(err => {
-            console.log(err)
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    openAdd() {
+      this.addModal = true;
+    },
+    addToList() {
+      console.log('clicked');
+      if (this.newProject.projectTitle !== '' && this.newProject.projectDesc !== '') {
+        this.$swal({
+          title: 'Add project',
+          text: 'You are about to add a new project!',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes',
         })
-    },
-    openAdd () {
-        this.addModal = true
-    },
-    addToList () {
-        if (this.newProject.projectTitle !== '' && this.newProject.projectDesc !== '') {
-            services.addProject({
+          .then((response) => {
+            if (response.value) {
+              services.addProject({
                 ...this.newProject,
-                projectUserId: this.userDetails._id
-            })
-            .then(res => {
-                console.log(res)
-                this.getProjects()
-                this.addModal = false
-            })
-            .catch(err => {
-                console.log(err)
-                this.addModal = false
-            })
-        }
+                projectUserId: this.userDetails._id,
+              })
+                .then((res) => {
+                  this.getProjects();
+                  this.addModal = false;
+                  this.$swal({
+                    type: 'success',
+                    text: 'Project successfully added',
+                    title: 'success',
+                  });
+                })
+                .catch((err) => {
+                  this.$swal({
+                    type: 'error',
+                    text: err.response.data.error,
+                    title: 'error',
+                  });
+                });
+            }
+          });
+      } else {
+        this.$swal({
+          type: 'error',
+          text: 'Enter all the fields',
+          title: 'Fill all fields',
+        });
+      }
     },
     makeid(length) {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let text = '';
+      const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < length; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
 
-        return text;
+      return text;
     },
-    upload (e) {
-      console.log(e)
-      const formData = new FormData()
+    upload(e) {
+      this.isUploading = true;
+      const formData = new FormData();
       formData.append('file', e[0]);
       formData.append('upload_preset', this.cloudinary.uploadPreset);
-      formData.append('public_id', this.makeid(20))
-      axios.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
-      .then(res => {
-        console.log(res)
-        console.log('ended')
-        this.newProject.projectBanner = res.data.secure_url
-        this.addDisabled = false
-      })
-      .catch(err => {
-          console.log(err.response)
-      })
+      formData.append('public_id', this.makeid(20));
+      this.$http.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
+        .then((res) => {
+          this.isUploading = false;
+          this.newProject.projectBanner = res.body.secure_url;
+          this.addDisabled = false;
+        })
+        .catch((err) => {
+          this.$swal({
+            title: 'Error',
+            type: 'error',
+            text: err.body.error.message,
+          });
+        });
     },
     // openEdit () {
     // },
-    openEdit (id) {
-        this.selectedProject = this.userProjects.find(proj => proj._id === id)
-        this.editProject = true
+    openEdit(id) {
+      this.selectedProject = this.userProjects.find(proj => proj._id === id);
+      this.editProject = true;
     },
-    delteProject (id) {
-        services.deleteUserProjects(id)
-        .then(res => {
-            console.log(res)
-            this.getProjects()
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    delteProject(id) {
+      this.$swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      })
+        .then((result) => {
+          if (result.value) {
+            services.deleteUserProjects(id)
+              .then((res) => {
+                console.log(res);
+                this.getProjects();
+                this.$swal({
+                  type: 'success',
+                  text: 'Project successfully deleted',
+                  title: 'Success',
+                });
+              })
+              .catch((err) => {
+                this.$swal({
+                  type: 'error',
+                  text: err.response.data.error,
+                  title: 'Error',
+                });
+              });
+          }
+        });
     },
-    submitCreate () {
-        console.log(this.selectedProject)
-    }
-  }
+    submitCreate() {
+      this.$swal({
+        title: 'Are you sure?',
+        text: "You won't be about to edit this project",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      })
+        .then((result) => {
+          if (result.value) {
+            services.updateUserProjects(id)
+              .then((res) => {
+                console.log(res);
+                this.getProjects();
+                this.$swal({
+                  type: 'success',
+                  text: 'Project successfully edited',
+                  title: 'Success',
+                });
+              })
+              .catch((err) => {
+                this.$swal({
+                  type: 'error',
+                  text: err.response.data.error,
+                  title: 'Error',
+                });
+              });
+          }
+        });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -238,8 +333,8 @@ export default {
     .inp {
         margin-top: 12px !important
     }
-    .sect-two { 
-        padding: 60px 100px; 
+    .sect-two {
+        padding: 60px 100px;
         .name {
             color:#47b8a3;
             font-size: 25px;
@@ -306,10 +401,10 @@ export default {
             p {
                 margin: 12px 0px
             }
-            .card {      
+            .card {
                 background: #FFFFFF;
-                // box-shadow: 0px 2.5px 5px rgba(0, 0, 0, 0.05);  
-                padding: 0 !important;      
+                // box-shadow: 0px 2.5px 5px rgba(0, 0, 0, 0.05);
+                padding: 0 !important;
                 height: 500px;
                 border: 0 !important;
                 border-radius: 0 !important;

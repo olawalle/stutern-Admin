@@ -41,7 +41,8 @@
     </div>
 </template>
 <script>
-import services from '../myServices'
+import services from '../myServices';
+
 export default {
   data() {
     return {
@@ -52,7 +53,7 @@ export default {
         { value: null, text: 'Class' },
         { text: 'SS 1', value: 'SS 1' },
         { text: 'SS 2', value: 'SS 2' },
-        { text: 'SS 3', value: 'SS 3' }
+        { text: 'SS 3', value: 'SS 3' },
       ],
       subjects: [
         { value: null, text: 'Subject' },
@@ -61,17 +62,17 @@ export default {
       radios: [
         { text: 'Paid', value: 'first' },
         { text: 'Free', value: 'second' },
-      ]
+      ],
     };
   },
-    methods: {
-        addTopic () {
-            let data = {
-                
-            }
-            services.addTopic(data)
-        }
-    }
+  methods: {
+    addTopic() {
+      const data = {
+
+      };
+      services.addTopic(data);
+    },
+  },
 };
 </script>
 <style scoped>

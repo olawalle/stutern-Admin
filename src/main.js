@@ -20,6 +20,9 @@ Vue.component('v-icon', Icon)
 import vueResource from 'vue-resource'
 Vue.use(vueResource)
 
+import VueSweetalert2 from 'vue-sweetalert2';
+Vue.use(VueSweetalert2);
+
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
@@ -27,8 +30,8 @@ axios.defaults.headers.common['x-access-token'] = window.sessionStorage.accessTo
 
 
 router.beforeEach((to, from, next) => {
-  console.log(from)
-  console.log(store.getters.logginStatus)
+  // console.log(from)
+  // console.log(store.getters.logginStatus)
   // if (!store.getters.logginStatus) {
   //   return next('/')
   // }

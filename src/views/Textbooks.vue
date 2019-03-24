@@ -94,92 +94,70 @@ export default {
       ],
       textbooks: [
         {
-          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Free'
+          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Free',
         },
         {
-          title: 'New General english', class: 'SS 2', subject: 'English Language', status: 'Published', type: 'Paid'
+          title: 'New General english', class: 'SS 2', subject: 'English Language', status: 'Published', type: 'Paid',
         },
         {
-          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Free'
+          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Free',
         },
         {
-          title: 'New english Mathematics', class: 'SS 3', subject: 'English Language', status: 'Published', type: 'Free'
+          title: 'New english Mathematics', class: 'SS 3', subject: 'English Language', status: 'Published', type: 'Free',
         },
         {
-          title: 'English General Mathematics', class: 'SS 3', subject: 'English Language', status: 'Published',type: 'Free'
+          title: 'English General Mathematics', class: 'SS 3', subject: 'English Language', status: 'Published', type: 'Free',
         },
         {
-          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Paid'
+          title: 'New General Mathematics', class: 'SS 1', subject: 'Mathematics', status: 'Published', type: 'Paid',
         },
       ],
     };
   },
   computed: {
-    filterBySubject: function () {
-        if (this.selectedSubject !== null) {
-            return this.textbooks.filter(book => {
-                return book.subject.toUpperCase() === this.selectedSubject.toUpperCase()
-            })
-        } else {
-            return this.textbooks
-        }
+    filterBySubject() {
+      if (this.selectedSubject !== null) {
+        return this.textbooks.filter(book => book.subject.toUpperCase() === this.selectedSubject.toUpperCase());
+      }
+      return this.textbooks;
     },
-    filterByClass: function () {
-        if (this.selectedClass !== null) {
-            return this.textbooks.filter(book => {
-                return book.class.toUpperCase() === this.selectedClass.toUpperCase()
-            })
-        } else {
-            return this.textbooks
-        }
+    filterByClass() {
+      if (this.selectedClass !== null) {
+        return this.textbooks.filter(book => book.class.toUpperCase() === this.selectedClass.toUpperCase());
+      }
+      return this.textbooks;
     },
-    filterByType: function () {
-        if (this.selectedType !== null) {
-            return this.textbooks.filter(book => {
-                return book.type.toUpperCase() === this.selectedType.toUpperCase()
-            })
-        } else {
-            return this.textbooks
-        }
+    filterByType() {
+      if (this.selectedType !== null) {
+        return this.textbooks.filter(book => book.type.toUpperCase() === this.selectedType.toUpperCase());
+      }
+      return this.textbooks;
     },
-    filteredBooks: function () {
-        if (this.selectedSubject !== null && this.selectedClass !== null && this.selectedType !== null) {
-            return this.textbooks.filter(book => {
-                return book.class.toUpperCase() === this.selectedClass.toUpperCase() && 
-                       book.type.toUpperCase() === this.selectedType.toUpperCase() &&
-                       book.subject.toUpperCase() === this.selectedSubject.toUpperCase()
-            })
-        } else if (this.selectedSubject === null && this.selectedClass !== null && this.selectedType !== null) {
-            return this.textbooks.filter(book => {
-                return book.class.toUpperCase() === this.selectedClass.toUpperCase() && 
-                       book.type.toUpperCase() === this.selectedType.toUpperCase()
-            })
-        } else if (this.selectedSubject !== null && this.selectedClass === null && this.selectedType !== null) {
-            return this.textbooks.filter(book => {
-                return book.subject.toUpperCase() === this.selectedSubject.toUpperCase() && 
-                       book.type.toUpperCase() === this.selectedType.toUpperCase()
-            })
-        } else if (this.selectedSubject !== null && this.selectedClass !== null && this.selectedType === null) {
-            return this.textbooks.filter(book => {
-                return book.subject.toUpperCase() === this.selectedSubject.toUpperCase() && 
-                       book.class.toUpperCase() === this.selectedClass.toUpperCase()
-            })
-        } else if (this.selectedSubject !== null && this.selectedClass === null && this.selectedType === null) {
-            return this.textbooks.filter(book => {
-                return book.subject.toUpperCase() === this.selectedSubject.toUpperCase()
-            })
-        } else if (this.selectedSubject === null && this.selectedClass !== null && this.selectedType === null) {
-            return this.textbooks.filter(book => {
-                return book.class.toUpperCase() === this.selectedClass.toUpperCase()
-            })
-        } else if (this.selectedSubject === null && this.selectedClass === null && this.selectedType !== null) {
-            return this.textbooks.filter(book => {
-                book.type.toUpperCase() === this.selectedType.toUpperCase()
-            })
-        } else {
-            return this.textbooks
-        }
-    }  
+    filteredBooks() {
+      if (this.selectedSubject !== null && this.selectedClass !== null && this.selectedType !== null) {
+        return this.textbooks.filter(book => book.class.toUpperCase() === this.selectedClass.toUpperCase()
+                       && book.type.toUpperCase() === this.selectedType.toUpperCase()
+                       && book.subject.toUpperCase() === this.selectedSubject.toUpperCase());
+      } if (this.selectedSubject === null && this.selectedClass !== null && this.selectedType !== null) {
+        return this.textbooks.filter(book => book.class.toUpperCase() === this.selectedClass.toUpperCase()
+                       && book.type.toUpperCase() === this.selectedType.toUpperCase());
+      } if (this.selectedSubject !== null && this.selectedClass === null && this.selectedType !== null) {
+        return this.textbooks.filter(book => book.subject.toUpperCase() === this.selectedSubject.toUpperCase()
+                       && book.type.toUpperCase() === this.selectedType.toUpperCase());
+      } if (this.selectedSubject !== null && this.selectedClass !== null && this.selectedType === null) {
+        return this.textbooks.filter(book => book.subject.toUpperCase() === this.selectedSubject.toUpperCase()
+                       && book.class.toUpperCase() === this.selectedClass.toUpperCase());
+      } if (this.selectedSubject !== null && this.selectedClass === null && this.selectedType === null) {
+        return this.textbooks.filter(book => book.subject.toUpperCase() === this.selectedSubject.toUpperCase());
+      } if (this.selectedSubject === null && this.selectedClass !== null && this.selectedType === null) {
+        return this.textbooks.filter(book => book.class.toUpperCase() === this.selectedClass.toUpperCase());
+      } if (this.selectedSubject === null && this.selectedClass === null && this.selectedType !== null) {
+        return this.textbooks.filter((book) => {
+          book.type.toUpperCase() === this.selectedType.toUpperCase();
+        });
+      }
+      return this.textbooks;
+    },
   },
   methods: {
     addTextbook() {

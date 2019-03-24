@@ -53,6 +53,6 @@ export default new Router({
       path: '/user-projects/:id',
       name: 'userProjects',
       component: UserProjects,
-    }
+    },
   ],
 });
