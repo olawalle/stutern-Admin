@@ -1,5 +1,5 @@
-// const baseUrl = 'http://localhost:4000/api/';
-const baseUrl = 'https://stutern-api.herokuapp.com/api/'
+const baseUrl = 'http://localhost:4000/api/';
+// const baseUrl = 'https://stutern-api.herokuapp.com/api/'
 export const allUsers = `${baseUrl}users`;
 export const allSets = `${baseUrl}sets`;
 export const jobTitles = `${baseUrl}job-title`;

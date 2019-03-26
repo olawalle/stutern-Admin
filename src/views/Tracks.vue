@@ -250,7 +250,7 @@ export default {
       return text;
     },
 
-    upload(e) {
+    upload(e, n) {
       this.isUploading = true;
       const formData = new FormData();
       formData.append('file', e[0]);
@@ -259,7 +259,7 @@ export default {
       this.$http.post(`https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/image/upload`, formData)
         .then((res) => {
           this.isUploading = false;
-          this.newTrack.banner = res.body.secure_url;
+          n === 1 ? this.newTrack.banner = res.body.secure_url : this.selectedTrack.banner = res.body.secure_url;
         })
         .catch((err) => {
           this.isUploading = false;
