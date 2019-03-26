@@ -9,7 +9,15 @@ const getUsers = () => axios({
   url: apiUrls.allUsers,
 })
   .then((res) => {
-    store.commit(mutationTypes.ALL_STUDENTS, res.data);
+    let students = res.datasort(function(a, b){
+      var keyA = a.userSet,
+          keyB = b.userSet;
+          // Compare the 2 dates
+          if(keyA < keyB) return -1;
+          if(keyA > keyB) return 1;
+          return 0;
+      });
+    store.commit(mutationTypes.ALL_STUDENTS, students);
   })
   .catch(err => console.log(err));
 
@@ -34,15 +42,23 @@ const getSets = () => axios({
   method: 'get',
   url: apiUrls.allSets,
 })
-  .then((res) => {
-    const data = res.data.map(set => ({
-      ...set,
-      text: set.setName,
-      value: set.setName,
-    }));
-    store.commit(mutationTypes.ALL_SETS, data);
-  })
-  .catch(err => console.log(err));
+.then((res) => {
+  const data = res.data.map(set => ({
+    ...set,
+    text: set.setName,
+    value: set.setName,
+  }))
+  .sort(function(a, b){
+    var keyA = a.setName,
+        keyB = b.setName;
+        // Compare the 2 dates
+        if(keyA < keyB) return -1;
+        if(keyA > keyB) return 1;
+        return 0;
+    });
+  store.commit(mutationTypes.ALL_SETS, data);
+})
+.catch(err => console.log(err));
 
 const postSet = data => axios({
   method: 'post',
