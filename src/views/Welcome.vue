@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper" @keyup="enter($event)">
         <!-- <div class="mynav">
             <img src="../assets/logo.svg" alt="">
         </div> -->
@@ -16,19 +16,10 @@
             <b-form-input id="inputLive"
                   v-model="code"
                   class="main-inp"
-                  type="text"
+                  type="password"
                   aria-describedby="inputLiveHelp inputLiveFeedback"
                   placeholder="Enter Passcode">
             </b-form-input>
-             <!-- <b-form-input id="inputLive"
-                  v-model="password"
-                  class="main-inp"
-                  type="text"
-                  aria-describedby="inputLiveHelp inputLiveFeedback"
-                  placeholder="Enter your password"></b-form-input> -->
-                  <!-- <v-icon name="beer"/> -->
-            <!-- <input type="text" placeholder="Enter ID" class="main-inp"><br>
-            <input type="text" placeholder="Enter your password" class="main-inp"><br> -->
             <button class="main-btn" @click="login()" :disabled="btnDisable">
                 Login
             </button>
@@ -63,9 +54,18 @@ export default {
         this.$store.commit(mutationTypes.LOGIN_STATUS, true);
         this.$router.push('/sets');
       } else {
-        alert('wrong passcode!');
+        this.$swal({
+            type: 'error',
+            text: 'You enterred a wrong Passcode, Please try again',
+            title: 'Wrong passcode',
+        });
       }
     },
+    enter(e) {
+        if (e.key === "Enter") {
+            this.login()
+        }
+    }
   },
   mounted() {
     this.$store.commit(mutationTypes.LOGIN_STATUS, false);

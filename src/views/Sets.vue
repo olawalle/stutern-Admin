@@ -177,7 +177,7 @@
                             color: #fff;
                             padding: 12px 30px;
                             border-radius: 6px;
-                            margin-top: 20px;" @click="submitEdit()">Edit</button>
+                            margin-top: 20px;" @click="submitEdit()">Save</button>
         </b-modal>
 
         <b-modal v-model="createUserModal" centered title="Create new user" :hide-footer="true">

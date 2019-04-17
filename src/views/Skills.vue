@@ -425,6 +425,7 @@ export default {
         align-items: center;
         justify-content: center;
         text-align: center;
+        height: 220px;
         padding: 40px 0;
     }
     .skill button {

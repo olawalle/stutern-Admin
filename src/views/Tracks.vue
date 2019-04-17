@@ -20,9 +20,6 @@
                     </p>
                 </div>
                 <div class="overlay">
-                    <!-- <button class="edit" @click="openEdit(project._id)">
-                        Edit
-                    </button> -->
                     <button class="edit" @click="openEdit(track._id)">
                         Edit
                     </button>
@@ -147,7 +144,7 @@
                                 color: #fff;
                                 padding: 12px 30px;
                                 border-radius: 6px;
-                                margin-top: 5px;" @click="editTrack()">Edit</button>
+                                margin-top: 5px;" @click="editTrack()">Save</button>
             </span>
         </b-modal>
     </div>

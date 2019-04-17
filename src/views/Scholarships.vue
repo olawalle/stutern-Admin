@@ -186,7 +186,7 @@
                                 color: #fff;
                                 padding: 12px 30px;
                                 border-radius: 6px;
-                                margin-top: 20px;" @click="updateScholarship()">Submit</button>
+                                margin-top: 20px;" @click="updateScholarship()">Save</button>
             </span>
         </b-modal>
     </div>

@@ -9,7 +9,7 @@ const getUsers = () => axios({
   url: apiUrls.allUsers,
 })
   .then((res) => {
-    let students = res.datasort(function(a, b){
+    let students = res.data.sort(function(a, b){
       var keyA = a.userSet,
           keyB = b.userSet;
           // Compare the 2 dates

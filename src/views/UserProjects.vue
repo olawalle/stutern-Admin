@@ -97,11 +97,10 @@
                                         color: #fff;
                                         padding: 12px 30px;
                                         border-radius: 6px;
-                                        margin-top: 20px;" @click="addToList()">Create ucuProject</button>
+                                        margin-top: 20px;" @click="addToList()">Create Project</button>
         </b-modal>
 
         <b-modal v-model="editProject" centered title="Edit Project" :hide-footer="true">
-            <!-- <label> "User full name</label> -->
             <b-form-input
                 style="margin-top:12px; height: 55px;"
                 type="text"
@@ -130,7 +129,7 @@
                                         color: #fff;
                                         padding: 12px 30px;
                                         border-radius: 6px;
-                                        margin-top: 20px;" @click="submitCreate()">Submit</button>
+                                        margin-top: 20px;" @click="submitCreate()">Save</button>
         </b-modal>
     </div>
 </template>
